@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import math
-from sympy import *
+
 
 plik = open("australian.dat")
 lista = []
@@ -176,7 +176,7 @@ def kolorowanie(lista):
     #         lista[i].append(1.0)
     #     else:
     #         lista[i].append(0.0)
-    return [entry[:14] + [float(random.randint(0, 1))] for entry in lista]
+    return [punkt[:14] + [float(random.randint(0, 1))] for punkt in lista]
 
 kolorowanie(nowa)
 
@@ -238,17 +238,15 @@ def nowe_srodki(lista):
             if element[14] == 0.0:
                 ilosc_zer += 1
 
-        print(
-            f'Zmiany w {licznik} przejsciu {licznik_zmian}\n'
-            f'ilosc klasy 0: {ilosc_zer} | ilosc klasy 1:{ilosc_jedynek}')
+        print(f'ilosc zer: {ilosc_zer} | ilosc jedynek:{ilosc_jedynek}')
         if licznik_zmian == 0:
             break
         licznik_zmian = 0
 
     return nowa_lista
 
-# print("----kolorowanie-----")
-# nowe_srodki(nowa)
+print("----kolorowanie-----")
+nowe_srodki(nowa)
 
 
 def srednia(vektor):
@@ -362,7 +360,7 @@ print(rozkładQR(macA,2))
 # def zlozMacierz(v1,v2):
 #     a = np.column_stack(v1,v2)
 #     return a
-#def rozkładQR(v1,v2):
+# def rozkładQR(v1,v2):
 #     A = zlozMacierz(v1, v2)
 #     u1 = v1
 #     e1 = e(u1)
@@ -417,7 +415,34 @@ def normMac(macierzB):
     return macierzNorm
 print("---------normalizacja i mnożenie---------")
 print(np.dot(normMac(BT), wektorXA))
-print("----------------------")
 
+macierzDoSVD = np.array(([1,2,0], [2,0,2]))
+def bazaV(macierzA):
+    mnozenie = np.dot(macierzA.T, macierzA)
+    w, v = np.linalg.eig(mnozenie)
+    return w, v
+def bazaU(macierzA):
+    mnozenie = np.dot(macierzA, macierzA.T)
+    w, v = np.linalg.eig(mnozenie)
+    return w, v
 
+def SVD(macierzA):
+    V = bazaV(macierzA)
+    U = bazaU(macierzA)
+    wymiary = macierzA.shape
+    if (wymiary[0]>wymiary[1]):
+        singularne = np.sqrt(V[0])
+        singularne = sorted(singularne, reverse=1)
+        s = np.diag(singularne)
+        macierzS = s
+    if (wymiary[1]>wymiary[0]):
+        singularne = np.sqrt(U[0])
+        singularne = sorted(singularne, reverse=1)
+        s = np.diag(singularne)
+        zero = np.array([[0],[0]])
+        macierzS = np.append(s, zero, axis=1)
+    return U[1], macierzS, V[1].T
+
+print("-----------SVD-----------")
+print(SVD(macierzDoSVD))
 
